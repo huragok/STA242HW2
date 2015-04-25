@@ -10,3 +10,7 @@ tmp
 *.synctex.gz
 *.Rhistory
 Reference
+css
+images
+js
+*.html

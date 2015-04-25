@@ -4,6 +4,8 @@
 # Email: wenhaowu1989@hotmail.com
 # Date: April 6th 2015
 
+library(animation)
+
 # Construction and initialization function of the BMLGrid class
 BMLGrid <- function(r, c, ncars) {
   cars <- sample(1 : (r * c), ncars['red'] + ncars['blue']) # The vector index of the cars in the grid
@@ -43,13 +45,44 @@ summary.BMLGrid <- function(g) {
 # Let us execute this constructor
 r <- 8
 c <- 6
-rho <- 0.5
+rho <- 0.3
 p_red <- 0.5
 
 ncars <- c(red = round(r * c * rho * p_red), blue = round(r * c * rho * (1 - p_red)))
 
 g <- BMLGrid(r, c, ncars)
 
+# Let there be traffic
 numSteps <- 5
+
+par(bg = "white") # ensure the background color is white
+plot(c, r, type = "n")
+ani.record(reset = TRUE) # clear history before recording
+
+plot(g) # Plot the initial g
+ani.record() # record the current frame
+  
+for (step in seq(1, numSteps)) {
+  if (step %% 2 == 1) { # Red cars move to right by 1 grid
+    red_right <- idx_right(g$red, r, c) # The vector index of the right grids to current red cars
+    red_new <- ifelse(g$grid[red_right] == 0, red_right, g$red) # If not occupied, move to right. Else stay at the current grid
+    
+    g$grid[g$red] <- 0 # Update grid
+    g$red <- red_new
+    g$grid[g$red] <- 1
+  } else { # Blue cars move upward by 1 grid
+    blue_up <- idx_up(g$blue, r, c) # The vector index of the right grids to current red cars
+    blue_new <- ifelse(g$grid[blue_up] == 0, blue_up, g$blue) # If not occupied, move to right. Else stay at the current grid
+    
+    g$grid[g$blue] <- 0 # Update grid
+    g$blue <- blue_new
+    g$grid[g$blue] <- 2
+  }
+  plot(g) # Plot g
+  ani.record() # record the current frame
+}
+
+oopts = ani.options(interval = 1)
+saveHTML(ani.replay(), img.name = "record_plot") # export the animation to an HTML page
 
 
