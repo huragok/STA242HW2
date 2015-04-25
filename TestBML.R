@@ -43,25 +43,30 @@ summary.BMLGrid <- function(g) {
 }
 
 # Let us execute this constructor
-r <- 8
-c <- 6
+r <- 100
+c <- 99
 rho <- 0.3
 p_red <- 0.5
+numSteps <- 10000
+profile <- TRUE # Parameter to determine whether to profile the program or not
+movie <- FALSE # Parameter to determine whether to record a movie or not
 
 ncars <- c(red = round(r * c * rho * p_red), blue = round(r * c * rho * (1 - p_red)))
 
 g <- BMLGrid(r, c, ncars)
 
 # Let there be traffic
-numSteps <- 5
+if (movie){
+  par(bg = "white") # ensure the background color is white
+  plot(c, r, type = "n")
+  ani.record(reset = TRUE) # clear history before recording
+  plot(g) # Plot the initial g
+  ani.record() # record the current frame
+}
+if (profile){
+  Rprof("ProfBMLGrid.out", line.profiling=TRUE) # Profiling the program
+}
 
-par(bg = "white") # ensure the background color is white
-plot(c, r, type = "n")
-ani.record(reset = TRUE) # clear history before recording
-
-plot(g) # Plot the initial g
-ani.record() # record the current frame
-  
 for (step in seq(1, numSteps)) {
   if (step %% 2 == 1) { # Red cars move to right by 1 grid
     red_right <- idx_right(g$red, r, c) # The vector index of the right grids to current red cars
@@ -78,11 +83,22 @@ for (step in seq(1, numSteps)) {
     g$blue <- blue_new
     g$grid[g$blue] <- 2
   }
-  plot(g) # Plot g
-  ani.record() # record the current frame
+  if (movie){
+    plot(g) # Plot g
+    ani.record() # record the current frame
+  }
 }
 
-oopts = ani.options(interval = 1)
-saveHTML(ani.replay(), img.name = "record_plot") # export the animation to an HTML page
+if (profile){
+  Rprof(NULL)
+  summaryRprof("ProfBMLGrid.out")
+  summaryRprof("ProfBMLGrid.out", lines = "show")
+}
 
+if (movie){
+  oopts = ani.options(interval = 1)
+  saveHTML(ani.replay(), img.name = "record_plot") # export the animation to an HTML page
+}
+
+plot(g)
 
