@@ -42,12 +42,21 @@ summary.BMLGrid <- function(g) {
   return(cat(paste(lines, collapse = '\n')))
 }
 
+# Function to compute the number of cars that moved, blocked given the index of cars we would like to move, the current grid and whether we would like to move up or right
+get_nmoved <- function(grid, r, c, cars, direction) {
+  if (direction == 'up') {
+    return(sum(grid[idx_up(cars, r, c)] == 0))
+  } else {
+    return(sum(grid[idx_right(cars, r, c)] == 0))
+  }
+}
+
 # Let us execute this constructor
 r <- 100
 c <- 99
 rho <- 0.3
-p_red <- 0.5
-numSteps <- 10000
+p_red <- 0.7
+numSteps <- 100
 profile <- TRUE # Parameter to determine whether to profile the program or not
 movie <- FALSE # Parameter to determine whether to record a movie or not
 
@@ -67,14 +76,17 @@ if (profile){
   Rprof("ProfBMLGrid.out", line.profiling=TRUE) # Profiling the program
 }
 
+nmoved <- rep(0, numSteps + 1) # Record the number of cars moved at each step
+nmoved[1] <- get_nmoved(g$grid, r, c, g$blue, 'up') 
 for (step in seq(1, numSteps)) {
-  if (step %% 2 == 1) { # Red cars move to right by 1 grid
+  if (step %% 2 == 0) { # Red cars move to right by 1 grid
     red_right <- idx_right(g$red, r, c) # The vector index of the right grids to current red cars
     red_new <- ifelse(g$grid[red_right] == 0, red_right, g$red) # If not occupied, move to right. Else stay at the current grid
     
     g$grid[g$red] <- 0 # Update grid
     g$red <- red_new
     g$grid[g$red] <- 1
+    nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$blue, 'up')  # Record the number of cars moved at each step
   } else { # Blue cars move upward by 1 grid
     blue_up <- idx_up(g$blue, r, c) # The vector index of the right grids to current red cars
     blue_new <- ifelse(g$grid[blue_up] == 0, blue_up, g$blue) # If not occupied, move to right. Else stay at the current grid
@@ -82,12 +94,17 @@ for (step in seq(1, numSteps)) {
     g$grid[g$blue] <- 0 # Update grid
     g$blue <- blue_new
     g$grid[g$blue] <- 2
+    nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$red, 'right')  # Record the number of cars moved at each step
   }
   if (movie){
     plot(g) # Plot g
     ani.record() # record the current frame
   }
 }
+
+nmoved <- nmoved[1 : numSteps]
+nblocked <- rep_len(c(ncars['blue'], ncars['red']), numSteps) - nmoved # The number of cars blocked at each step
+vaverage <- nmoved / (nmoved + nblocked) # The average velocity at each step
 
 if (profile){
   Rprof(NULL)
