@@ -31,13 +31,13 @@ idx_up <- function(idx, r, c) {
 }
 
 # Mehthod to plot BMLGrid class object
-plot.BMLGrid <- function(g) {
+plot.BMLGrid <- function(g, ...) {
   colormap <- c("white", "red", "blue")
   image(1 : ncol(g$grid), 1 : nrow(g$grid), t(g$grid), col = colormap, xlab = '', ylab = '')
 }
 
 # Method to summarize BMLGrid class object
-summary.BMLGrid <- function(g) {
+summary.BMLGrid <- function(g, ...) {
   lines <- c("BMLGrid class object.", paste(c(" -", toString(nrow(g$grid)), 'rows,', toString(ncol(g$grid)), 'columns'), collapse = ' '), paste(c(" -", toString(length(g$red)), 'red,', toString(length(g$blue)), 'blue.\n'), collapse = ' '))
   return(cat(paste(lines, collapse = '\n')))
 }
