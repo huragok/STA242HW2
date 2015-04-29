@@ -1,0 +1,11 @@
+Package: BMLGrid
+Type: Package
+Title: Simulate the Biham-Middleton-Levine Traffic Model.
+Version: 1.0
+Date: 2015-04-28
+Author: Wenhao Wu
+Maintainer: Wenhao Wu <wnhwu@ucdavis.edu>
+Description: More about what it does (maybe more than one line)
+License: GPL-3
+Imports:
+  animation
