@@ -2,6 +2,6 @@
 
 S3method(plot,BMLGrid)
 S3method(summary,BMLGrid)
-export(BMLGrid)
 export(createBMLGrid)
 export(runBMLGrid)
+import(animation)

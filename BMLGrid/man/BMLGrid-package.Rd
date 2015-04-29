@@ -3,12 +3,10 @@
 \alias{BMLGrid}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+BMLGrid: a package to simulate the Biham-Middleton-Levine Traffic Model.
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+The BMLGrid provides a constructor function \code{\link{createBMLGrid}} for the S3 class BMLGrid, two S3 methods \code{\link{plot.BMLGrid}} and \code{\link{summary.BMLGrid}}. The workhorse function that simulate the moving process of BML model from a given initial step thoughout a given number of steps is \code{\link{runBMLGrid}}
 }
 \details{
 \tabular{ll}{
@@ -16,26 +14,18 @@ Package: \tab BMLGrid\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2015-04-28\cr
-License: \tab What license is it under?\cr
+License: \tab GPL (>=3)\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
+
 }
 \author{
-Who wrote it
+Wenhao Wu <wnhwu@ucdavis.edu>
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer: Wenhao Wu <wnhwu@ucdavis.edu>
 }
+
 \references{
-~~ Literature or other references for background information ~~
+\url{http://eeyore.ucdavis.edu/stat242/Homeworks/hw2.pdf}
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R ~~
-~~ documentation directory ~~
 \keyword{ package }
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
-\examples{
-~~ simple examples of the most important functions ~~
-}
+

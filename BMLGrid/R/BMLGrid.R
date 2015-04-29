@@ -1,7 +1,16 @@
+#' Constructor for S3 class BMLGrid
+#'
+#' @param r A non-negative integer, the number of rows of the grid.
+#' @param c A non-negative integer, the number of columns of the grid.
+#' @param ncars A named vector of 2 non-negative integers where \code{ncars['red']}, \code{ncars['blue']} represent the number of red/blue cars in the grid, respectively.
+#' @return A BMLGrid class object with 3 attirbutes: grid, red and blue.
+#' @examples
+#' library(BMLGrid)
+#' g = createBMLGrid(r = 100, c = 99, ncars = c(red = 100, blue = 100))
 #' @export
-BMLGrid <- function(r, c, ncars) {
+createBMLGrid <- function(r, c, ncars) {
   cars <- sample(1 : (r * c), ncars['red'] + ncars['blue']) # The vector index of the cars in the grid
-  red <- sample(cars, ncars['red'])  # The vector index of the red cars in the grid
+  red <- sample(cars, ncars['red'])  # The vector index? of the red cars in the grid
   blue <- setdiff(cars, red)  # The vector index of the blue cars in the grid
   grid <- matrix(0, nrow = r, ncol = c) # The matrix representing the cars, 0 indicates no cars on that grid
   grid[red] <- 1 # 1 indicates a red car on the grid
@@ -12,23 +21,57 @@ BMLGrid <- function(r, c, ncars) {
   return(instance_BMLGrid)
 }
 
+#' plot method for BMLGrid class object
+#'
+#' Plot the cars on the grid as red/blue squares over a white background.
+#'
+#' @param g A BMLGrid class object.
+#' @param ... Other input arguments are simply ignored.
+#' @examples
+#' library(BMLGrid)
+#' g = createBMLGrid(r = 100, c = 99, ncars = c(red = 100, blue = 100))
+#' plot(g)
 #' @export
 plot.BMLGrid <- function(g, ...) {
   colormap <- c("white", "red", "blue")
   image(1 : ncol(g$grid), 1 : nrow(g$grid), t(g$grid), col = colormap, xlab = '', ylab = '')
 }
 
+#' summary method for BMLGrid class object
+#'
+#' The summary includes information on the grid size and the number of red and blue cars in the grid.
+#'
+#' @param g A BMLGrid class object.
+#' @param ... Other input arguments are simply ignored.
+#' @examples
+#' library(BMLGrid)
+#' g = createBMLGrid(r = 100, c = 99, ncars = c(red = 100, blue = 100))
+#' summary(g)
 #' @export
 summary.BMLGrid <- function(g, ...) {
   lines <- c("BMLGrid class object.", paste(c(" -", toString(nrow(g$grid)), 'rows,', toString(ncol(g$grid)), 'columns'), collapse = ' '), paste(c(" -", toString(length(g$red)), 'red,', toString(length(g$blue)), 'blue.\n'), collapse = ' '))
   return(cat(paste(lines, collapse = '\n')))
 }
 
-#' @export
-createBMLGrid <- function(r, c, ncars) {
-  return(BMLGrid(r, c, ncars))
-}
-
+#' Simulator for Biham-Middleton-Levine Traffic Model.
+#' 
+#' The function that actuall runs the Biham-Middleton-Levine Traffic Model from an initial state by a given number of steps.
+#'
+#' @import animation 
+#' @param g A BMLGrid class object representing the initial state of the grid.
+#' @param numSteps Number of moves/periods.
+#' @param movieName If specified as a non-NULL string, functions from package 'animation' will be used to record the BML process as a movie.
+#' @param recordSpeed The flag value indicating whether to record and return the average speed of the red and blue cars ar each step.
+#' @return If recordSpeed is unspecified or specified as \code{FALSE}, returns a \code{BMLGrid} object representing the final state of the simulation; otherwise return a list where the first element is the final-state grid object and the 2nd and 3rd elements record the average speed of red cars and blue cars, respectively.
+#' @examples
+#' library(BMLGrid)
+#' g = createBMLGrid(r = 100, c = 99, ncars = c(red = 100, blue = 100))
+#' g.out = runBMLGrid(g, numSteps = 10000)
+#' plot(g.out)
+#' g.out = runBMLGrid(g, numSteps = 10000, movieName = 'movieBMLGrid', recordSpeed = TRUE)
+#' plot(g.out$g)
+#' summary(g.out$v.blue)
+#' summary(g.out$v.red)
 #' @export
 runBMLGrid <- function(g, numSteps, movieName = NULL, recordSpeed = FALSE) {
   r <- nrow(g$grid)
