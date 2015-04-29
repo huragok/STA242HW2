@@ -56,7 +56,7 @@ r <- 100
 c <- 99
 rho <- 0.3
 p_red <- 0.7
-numSteps <- 100
+numSteps <- 10000
 profile <- TRUE # Parameter to determine whether to profile the program or not
 movie <- FALSE # Parameter to determine whether to record a movie or not
 
@@ -81,19 +81,17 @@ nmoved[1] <- get_nmoved(g$grid, r, c, g$blue, 'up')
 for (step in seq(1, numSteps)) {
   if (step %% 2 == 0) { # Red cars move to right by 1 grid
     red_right <- idx_right(g$red, r, c) # The vector index of the right grids to current red cars
-    red_new <- ifelse(g$grid[red_right] == 0, red_right, g$red) # If not occupied, move to right. Else stay at the current grid
-    
-    g$grid[g$red] <- 0 # Update grid
-    g$red <- red_new
-    g$grid[g$red] <- 1
+    movable <- (g$grid[red_right] == 0)
+    g$grid[g$red[movable]] <- 0 # Update grid
+    g$grid[red_right[movable]] <- 1
+    g$red <- c(red_right[movable], g$red[!movable])
     nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$blue, 'up')  # Record the number of cars moved at each step
   } else { # Blue cars move upward by 1 grid
     blue_up <- idx_up(g$blue, r, c) # The vector index of the right grids to current red cars
-    blue_new <- ifelse(g$grid[blue_up] == 0, blue_up, g$blue) # If not occupied, move to right. Else stay at the current grid
-    
-    g$grid[g$blue] <- 0 # Update grid
-    g$blue <- blue_new
-    g$grid[g$blue] <- 2
+    movable <- (g$grid[blue_up] == 0)
+    g$grid[g$blue[movable]] <- 0 # Update grid
+    g$grid[blue_up[movable]] <- 2
+    g$blue <- c(blue_up[movable], g$blue[!movable])
     nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$red, 'right')  # Record the number of cars moved at each step
   }
   if (movie){

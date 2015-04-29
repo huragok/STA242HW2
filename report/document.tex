@@ -1,0 +1,100 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.0 (4/2/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[twocolumn]{article}
+
+\usepackage{mhchem} % Package for chemical equation typesetting
+\usepackage{siunitx} % Provides the \SI{}{} command for typesetting SI units
+\usepackage{hyperref}
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{bm}
+\usepackage{multirow}% http://ctan.org/pkg/multirow
+\usepackage{hhline}% http://ctan.org/pkg/hhline
+
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{UC Davis STA 242 2015 Spring Assignment 2} % Title
+\author{Wenhao \textsc{Wu}, 9987583} % Author name
+\date{\today} % Date for the report
+
+\begin{document}
+\maketitle % Insert the title, author and date
+
+% If you wish to include an abstract, uncomment the lines below
+
+\section{Data Structure and Algorithm Design}
+A \texttt{BMLGrid} instance contains 3 components:
+\begin{description}
+    \item[\texttt{grid}] A \texttt{r}-by-\texttt{c} integer matrix. If
+    \texttt{grid[i,j]==0}, then there is no car on the crossing of $i$-th row
+    and $j$-th column; if \texttt{grid[i,j]==1}, there is a red car on that
+    grid; if \texttt{grid[i,j]==2}, there is a blue car on that. In our program,
+    when \texttt{grid} is indexed, it is treated as a vector (1-D).
+    \item[\texttt{blue}] An integer vector contains the 1-D indices of
+    all blue cars in \texttt{grid}.
+    \item[\texttt{red}] An integer vector contains the 1-D indices of
+    all red cars in \texttt{grid}.
+\end{description}
+We define 2 key functions that returns a vector of 1-D
+indices in \texttt{grid}
+\begin{description}
+    \item[\texttt{idx\_right()}] Given an input vector of 1-D indices in
+    \texttt{grid}, return a vector of 1-D indices in \texttt{grid} for grids to
+    the \emph{right} of the input grids.
+    \item[\texttt{idx\_up()}] Given an input vector of 1-D indices in
+    \texttt{grid}, return a vector of 1-D indices in \texttt{grid} for grids to
+    the \emph{up} of the input grids.
+\end{description}
+Upon each step, we use \texttt{idx\_up()}(\texttt{idx\_right()}) to check in
+\texttt{grid} whether the grids to the up(right) of the grids represented by
+\texttt{blue}(\texttt{red}) is occupied, then update the cars' indices
+\texttt{blue}(\texttt{red}) and the grid state \texttt{grid} accordingly.
+
+
+\section{Simulation Results}
+\subsection{Behavior of the BML model}
+\subsection{Code Performance}
+
+\section{Build BMLGrid Package}
+%\pagebreak
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+%\bibliographystyle{unsrt}
+%\bibliography{myrefs}
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}
