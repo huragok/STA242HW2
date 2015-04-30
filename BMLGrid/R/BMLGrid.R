@@ -121,7 +121,7 @@ runBMLGrid <- function(g, numSteps, movieName = NULL, recordSpeed = FALSE) {
       g$grid[red_right[movable]] <- 1
       g$red <- c(red_right[movable], g$red[!movable])
       if (recordSpeed) {
-        nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$blue, 'up')  # Record the number of cars moved at each step
+        nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$red, 'up')  # Record the number of cars moved at each step
       }
     } else { # Blue cars move upward by 1 grid
       blue_up <- idx_up(g$blue, r, c) # The vector index of the right grids to current red cars
@@ -130,7 +130,7 @@ runBMLGrid <- function(g, numSteps, movieName = NULL, recordSpeed = FALSE) {
       g$grid[blue_up[movable]] <- 2
       g$blue <- c(blue_up[movable], g$blue[!movable])
       if (recordSpeed) {
-        nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$red, 'right')  # Record the number of cars moved at each step
+        nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$blue, 'right')  # Record the number of cars moved at each step
       }
     }
     if (!movable_any && !any(movable)) {
