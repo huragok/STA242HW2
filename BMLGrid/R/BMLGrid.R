@@ -90,6 +90,7 @@ runBMLGrid <- function(g, numSteps, movieName = NULL, recordSpeed = FALSE) {
     nmoved <- rep(0, numSteps + 1) # Record the number of cars moved at each step
     nmoved[1] <- get_nmoved(g$grid, r, c, g$blue, 'up') 
   }
+  movable_any <- TRUE
   for (step in seq_len(numSteps)) {
     if (step %% 2 == 0) { # Red cars move to right by 1 grid
       red_right <- idx_right(g$red, r, c) # The vector index of the right grids to current red cars
@@ -109,6 +110,11 @@ runBMLGrid <- function(g, numSteps, movieName = NULL, recordSpeed = FALSE) {
       if (recordSpeed) {
         nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$red, 'right')  # Record the number of cars moved at each step
       }
+    }
+    if (!movable_any && !any(movable)) {
+      break # We have entered a grid lock, no need to continue
+    } else {
+      movable_any <- any(movable)
     }
     if (flag_movie){
       plot(g) # Plot g

@@ -54,7 +54,7 @@ get_nmoved <- function(grid, r, c, cars, direction) {
 # Let us execute this constructor
 r <- 100
 c <- 99
-rho <- 0.3
+rho <- 0.7
 p_red <- 0.7
 numSteps <- 10000
 profile <- TRUE # Parameter to determine whether to profile the program or not
@@ -77,7 +77,8 @@ if (profile){
 }
 
 nmoved <- rep(0, numSteps + 1) # Record the number of cars moved at each step
-nmoved[1] <- get_nmoved(g$grid, r, c, g$blue, 'up') 
+nmoved[1] <- get_nmoved(g$grid, r, c, g$blue, 'up')
+movable_any <- TRUE
 for (step in seq(1, numSteps)) {
   if (step %% 2 == 0) { # Red cars move to right by 1 grid
     red_right <- idx_right(g$red, r, c) # The vector index of the right grids to current red cars
@@ -94,6 +95,12 @@ for (step in seq(1, numSteps)) {
     g$blue <- c(blue_up[movable], g$blue[!movable])
     nmoved[step + 1] <- get_nmoved(g$grid, r, c, g$red, 'right')  # Record the number of cars moved at each step
   }
+  if (!movable_any && !any(movable)) {
+    break # We have entered a grid lock, no need to continue
+  } else {
+    movable_any <- any(movable)
+  }
+  
   if (movie){
     plot(g) # Plot g
     ani.record() # record the current frame
