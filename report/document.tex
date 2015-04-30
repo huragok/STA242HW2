@@ -84,22 +84,64 @@ Upon each step, we use \texttt{idx\_up()}(\texttt{idx\_right()}) to check in
 The R script file to test the basic design of our code is \textbf{Test.R}.
 
 \section{Verifying and Profiling}
-In order to verify the functionality of our BML method.
+In order to verify the functionality of our BML simulation, we use package
+`animation' to generate a short movie showing how cars move on the grid. This
+function has also been incorporated in our final BMLGrid package.
+
+We have also improved the performance of our code using Rprof(), which
+originally happens at commit e8fcb63. We demonstrate this process by recreating
+the code for the original algorithm in \textbf{TestProfiling\_original.R} and
+compare it with our improved code which is profiled in \textbf{TestProfiling.R}. Again
+we take the total running time over 10 repetitions of constructing a BMLGrid
+object with $r=100$, $c=99$, $\rho=0.3$ and the same number of red and blue
+cars, then run the BML simulation for 10000 steps. The generated profiling files
+for the original and the modified code are \textbf{ProfBMLGridOriginal.out} and
+\textbf{ProfBMLGrid.out}, respectively. When examining the profiling result for
+the original code, the first few lines are shown in Table~\ref{tab:profile_original}. We
+notice that function \texttt{ifelse()} has a very high overhead, and confirm
+this observation by using \texttt{lines=``show''} option in
+\texttt{summaryRprof()} function, which shows that \texttt{ifelse()} in line 68
+and 78 have a self.time of 7.82 and 5.96, respectively. The total sampling.time
+is 31.98.
+
+\begin{table}[!t]
+    \renewcommand{\arraystretch}{1.3}
+    \caption{Rpof summary for the original code (by.self).}
+    \label{tab:profile_original}
+    \centering
+    \begin{tabular}{c|cccc}
+        \hline
+         & self.time & self.pct & total.time & total.pct \\
+        \hline
+        ``ifelse'' & 13.46 & 42.09 & 13.74 & 42.96 \\
+        ``eval'' & 8.82 & 27.58 & 31.98 & 100.00 \\
+        ``\%\%'' & 2.88 & 9.01 & 2.88 & 9.01 \\
+        \ldots & \ldots & \ldots & \ldots & \ldots \\
+        \hline
+    \end{tabular}
+\end{table}
+
+To reduce this overhead, we notice that in our design the order of \texttt{red}
+and \texttt{blue} vector component of a \texttt{BMLGrid} instance does not
+matter at all. Consequently, a more effective method to update these two components is to
+simply concatenate a sub-vector of indices of the cars moved and a
+sub-vector of indices of the cars unmoved. As a result, our modified code has
+reduced the sampling.time to 20.9, a good 1/3 of improvement in running speed.
 
 \section{Simulation Results}
 \subsection{Behavior of the BML model}
-We pick an $r=100$, $c=99$ grid in which the number of blue cars and red cars
+We pick a $r=100$, $c=99$ grid in which the number of blue cars and red cars
 are the same. After $N = 10000$ steps, we observe a phase transition in the
 final state of the grid at $\rho\approx 0.38$. The final states of the grid for
 $\rho = 0.2, 0.33, 0.38, 0.43, 0.5$ are plotted in Fig.~\ref{fig:final_state}.
 When $\rho$ is small, the grid eventually enters an ordered state where the red
-and blue cars form a few top-left-to-bottom-right diagonal sparse strips that
+and blue cars form a few sparse top-left-to-bottom-right diagonal strips that
 moves right/upward with little interference. When $\rho$ is large, the grid eventually
-enters a stale state where the red and blue cars form a few
-top-right-to-bottom-left dense diagonal strips that stopped moving any more. At
+enters a stale state where the red and blue cars form a few dense
+top-right-to-bottom-left diagonal strips that stopped moving any more. At
 $\rho\approx 0.38$, we observed a state transition where after $N = 10000$
 steps, the grid is neither in a fully ordered, interference-free mode nor in a
-complete gtid lock.
+complete grid lock.
 
 \begin{figure}[!t]
     \begin{minipage}[b]{0.49\linewidth}
@@ -145,7 +187,7 @@ When $\rho$ is above a threshold, the larger $\rho$ is, the quicker the average
 speed drops to 0, indicating there is a total grid lock. When $\rho\approx
 0.38$, the average speed varies drastically and takes very long (or maybe
 infinite) time to reach either the ordered state or the grid lock state. In
-summary, the BML traffic model demonstrate \emph{chaotic} behavior: the system
+summary, the BML traffic model demonstrate a \emph{chaotic} behavior: the system
 is mostly determinstic (except for the grid initialization), however a minor
 change in parameter $\rho$ will result in a completely different future.
 
@@ -175,7 +217,7 @@ The result is plotted in Fig~\ref{fig:running_time}. When $\rho$ is smaller than
 the threshold, the larger $\rho$ is, the longer the running time is. This is due
 to the fact that the vector indexing/updating has complexity proportional to the
 number of cars. When $\rho$ is greater than the threshold, the running time
-dereases dramatically, thanks to our codes capability to detect a grid lock
+dereases dramatically, thanks to our codes' capability to detect a grid lock
 state and break from the iteration. As expected, the running time reaches its
 peak when $\rho\approx0.38$. Also it is intuitively correct that the running
 time is about proportional to the size of the grid (i.e. the square of the edge
