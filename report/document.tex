@@ -81,21 +81,23 @@ Upon each step, we use \texttt{idx\_up()}(\texttt{idx\_right()}) to check in
 \texttt{blue}(\texttt{red}) is occupied, then update the cars' indices
 \texttt{blue}(\texttt{red}) and the grid state \texttt{grid} accordingly.
 
+The R script file to test the basic design of our code is \textbf{Test.R}.
+
 \section{Verifying and Profiling}
-In order to verify the functionality with our BML method
+In order to verify the functionality of our BML method.
 
 \section{Simulation Results}
 \subsection{Behavior of the BML model}
 We pick an $r=100$, $c=99$ grid in which the number of blue cars and red cars
 are the same. After $N = 10000$ steps, we observe a phase transition in the
-final state of the grid at $\rho\approx= 0.38$. The final states of the grid for
+final state of the grid at $\rho\approx 0.38$. The final states of the grid for
 $\rho = 0.2, 0.33, 0.38, 0.43, 0.5$ are plotted in Fig.~\ref{fig:final_state}.
 When $\rho$ is small, the grid eventually enters an ordered state where the red
 and blue cars form a few top-left-to-bottom-right diagonal sparse strips that
 moves right/upward with little interference. When $\rho$ is large, the grid eventually
 enters a stale state where the red and blue cars form a few
 top-right-to-bottom-left dense diagonal strips that stopped moving any more. At
-$\rho\approx= 0.38$, we observed a state transition where after $N = 10000$
+$\rho\approx 0.38$, we observed a state transition where after $N = 10000$
 steps, the grid is neither in a fully ordered, interference-free mode nor in a
 complete gtid lock.
 
@@ -140,7 +142,7 @@ velocity of blue cars change over time for different $\rho$. As we can see, when
 $\rho$ is below a threshold, the smaller $\rho$ is, the quicker the average
 speed reaches 1, indicating that their is no blockage for blue cars in the grid.
 When $\rho$ is above a threshold, the larger $\rho$ is, the quicker the average
-speed drops to 0, indicating there is a total grid lock. When $\rho\approx=
+speed drops to 0, indicating there is a total grid lock. When $\rho\approx
 0.38$, the average speed varies drastically and takes very long (or maybe
 infinite) time to reach either the ordered state or the grid lock state. In
 summary, the BML traffic model demonstrate \emph{chaotic} behavior: the system
@@ -153,6 +155,10 @@ change in parameter $\rho$ will result in a completely different future.
     \caption{The evolution of average velocity of the blue cars.}
     \label{fig:average_velocity}
 \end{figure}
+
+The R script file to demonstrate the behavior of BML model and measure the
+average velocity are \textbf{TestBehavior.R} and
+\textbf{TestAverageVelocity.R}, respectively.
 
 \subsection{Code Performance}
 In order to demonstrate the performance of our code, we measure the running time
@@ -171,10 +177,12 @@ to the fact that the vector indexing/updating has complexity proportional to the
 number of cars. When $\rho$ is greater than the threshold, the running time
 dereases dramatically, thanks to our codes capability to detect a grid lock
 state and break from the iteration. As expected, the running time reaches its
-peak when $\rho\approx=0.38$. Also it is intuitively correct that the running
+peak when $\rho\approx0.38$. Also it is intuitively correct that the running
 time is about proportional to the size of the grid (i.e. the square of the edge
 length).
 
+The R script file to test the running time of our BMLGrid key functions is
+\textbf{TestRunningTime.R}.
 
 \begin{figure}[h]
     \centering
@@ -185,11 +193,13 @@ length).
     \label{fig:running_time}
 \end{figure}
 
+
 \section{Build BMLGrid Package}
 The BMLGrid package is developed in RStudio. We manually edit the
 DESCRIPTION file and the package level object documentation file
 BMLGrid-package.Rd, while NAMESPACE and other function
-documentation files are generated with roxygen2. 
+documentation files are generated with roxygen2. The source package is located
+in directory \textbf{BMLGrid/}.
 
 %\pagebreak
 %	BIBLIOGRAPHY
