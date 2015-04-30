@@ -81,13 +81,115 @@ Upon each step, we use \texttt{idx\_up()}(\texttt{idx\_right()}) to check in
 \texttt{blue}(\texttt{red}) is occupied, then update the cars' indices
 \texttt{blue}(\texttt{red}) and the grid state \texttt{grid} accordingly.
 
+\section{Profiling and Improving}
 
 \section{Simulation Results}
 \subsection{Behavior of the BML model}
+We pick an $r=100$, $c=99$ grid in which the number of blue cars and red cars
+are the same. After $N = 10000$ steps, we observe a phase transition in the
+final state of the grid at $\rho\approx= 0.38$. The final states of the grid for
+$\rho = 0.2, 0.33, 0.38, 0.43, 0.5$ are plotted in Fig.~\ref{fig:final_state}.
+When $\rho$ is small, the grid eventually enters an ordered state where the red
+and blue cars form a few top-left-to-bottom-right diagonal sparse strips that
+moves right/upward with little interference. When $\rho$ is large, the grid eventually
+enters a stale state where the red and blue cars form a few
+top-right-to-bottom-left dense diagonal strips that stopped moving any more. At
+$\rho\approx= 0.38$, we observed a state transition where after $N = 10000$
+steps, the grid is neither in a fully ordered, interference-free mode nor in a
+complete gtid lock.
+
+\begin{figure}[!t]
+    \begin{minipage}[b]{0.49\linewidth}
+      \centering
+      \centerline{\includegraphics[width=4.0cm]{./figs/TestBehavior_100_99_10000_02_end.pdf}}
+      \centerline{(a) $\rho = 0.2$}\medskip
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.49\linewidth}
+      \centering
+      \centerline{\includegraphics[width=4.0cm]{./figs/TestBehavior_100_99_10000_033_end}}
+      \centerline{(b) $\rho = 0.33$}\medskip
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.49\linewidth}
+      \centering
+      \centerline{\includegraphics[width=4.0cm]{./figs/TestBehavior_100_99_10000_038_end}}
+      \centerline{(c) $\rho = 0.38$}\medskip
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.49\linewidth}
+      \centering
+      \centerline{\includegraphics[width=4.0cm]{./figs/TestBehavior_100_99_10000_043_end}}
+      \centerline{(d) $\rho = 0.43$}\medskip
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{1\linewidth}
+      \centering
+      \centerline{\includegraphics[width=4.0cm]{./figs/TestBehavior_100_99_10000_05_end}}
+      \centerline{(e) $\rho = 0.5$}\medskip
+    \end{minipage}
+    \caption{Final state of a $100\times99$ grid with equal number of blue and
+    red cars after 10000 steps for different car density $\rho$.}
+    \label{fig:final_state}
+\end{figure}
+
+We further justify this phase transition by looking at the evolution of the
+grid. In Fig.~\ref{fig:average_velocity}, we demonstrate how the average
+velocity of blue cars change over time for different $\rho$. As we can see, when
+$\rho$ is below a threshold, the smaller $\rho$ is, the quicker the average
+speed reaches 1, indicating that their is no blockage for blue cars in the grid.
+When $\rho$ is above a threshold, the larger $\rho$ is, the quicker the average
+speed drops to 0, indicating there is a total grid lock. When $\rho\approx=
+0.38$, the average speed varies drastically and takes very long (or maybe
+infinite) time to reach either the ordered state or the grid lock state. In
+summary, the BML traffic model demonstrate \emph{chaotic} behavior: the system
+is mostly determinstic (except for the grid initialization), however a minor
+change in parameter $\rho$ will result in a completely different future.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=2.5in]{figs/TestVelocity.pdf}
+    \caption{The evolution of average velocity of the blue cars.}
+    \label{fig:average_velocity}
+\end{figure}
 
 \subsection{Code Performance}
+In order to demonstrate the performance of our code, we measure the running time
+of a function in which
+\begin{itemize}
+    \item A BMLGrid instance \texttt{g} with $r=c=128,256,512,1024$ and
+    $\rho=0.1,0.2,9.3,0.4,0.5,0.6,0.7$ is contructed.
+    \item A BML simulation for $N=10000$ steps is performed on \texttt{g}.
+\end{itemize}
+For each of the $4\times7 = 28$ instances, the running time is measured by
+taking the average of 5 runs. We run this test on a Dell Precision T1700
+workstation equipped with 16GB RAM and a Core i7-4790K CPU in Ubuntu 14.04 OS.
+The result is plotted in Fig~\ref{fig:running_time}. When $\rho$ is smaller than
+the threshold, the larger $\rho$ is, the longer the running time is. This is due
+to the fact that the vector indexing/updating has complexity proportional to the
+number of cars. When $\rho$ is greater than the threshold, the running time
+dereases dramatically, thanks to our codes capability to detect a grid lock
+state and break from the iteration. As expected, the running time reaches its
+peak when $\rho\approx=0.38$. Also it is intuitively correct that the running
+time is about proportional to the size of the grid (i.e. the square of the edge
+length).
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=2.5in]{figs/TestRunningTime.pdf}
+    \caption{Average user time of a barebone BMLGrid simulation over 5
+    repetitions for $\rho=0.1,0.2,9.3,0.4,0.5,0.6,0.7$ and
+    $r=c=128,256,512,1024$.}
+    \label{fig:running_time}
+\end{figure}
 
 \section{Build BMLGrid Package}
+The BMLGrid package is developed in RStudio. We manually edit the
+DESCRIPTION file and the package level object documentation file
+BMLGrid-package.Rd, while NAMESPACE and other function
+documentation files are generated with roxygen2. 
+
 %\pagebreak
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
