@@ -6,7 +6,7 @@
 BMLGrid: a package to simulate the Biham-Middleton-Levine Traffic Model.
 }
 \description{
-The BMLGrid provides a constructor function \code{\link{createBMLGrid}} for the S3 class BMLGrid, two S3 methods \code{\link{plot.BMLGrid}} and \code{\link{summary.BMLGrid}}. The workhorse function that simulate the moving process of BML model from a given initial step thoughout a given number of steps is \code{\link{runBMLGrid}}
+The BMLGrid provides a constructor function \code{\link{createBMLGrid}} and a validator function \code{\link{validateBMLGrid}} for the S3 class BMLGrid, two S3 methods \code{\link{plot.BMLGrid}} and \code{\link{summary.BMLGrid}}. The workhorse function that simulate the moving process of BML model from a given initial step thoughout a given number of steps is \code{\link{runBMLGrid}}
 }
 \details{
 \tabular{ll}{

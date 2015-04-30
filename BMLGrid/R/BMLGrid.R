@@ -21,6 +21,23 @@ createBMLGrid <- function(r, c, ncars) {
   return(instance_BMLGrid)
 }
 
+#' BMLGrid class validating function
+#' 
+#' Validate that the 3 components of a BMLGrid class object is consistent
+#'
+#' @param g A BMLGrid class object.
+#' @examples
+#' library(BMLGrid)
+#' g = createBMLGrid(r = 100, c = 99, ncars = c(red = 100, blue = 100))
+#' validateBMLGrid(g)
+#' g.out = runBMLGrid(g, numSteps = 10000)
+#' validateBMLGrid(g.out)
+#' @export
+validateBMLGrid <- function(g) {
+  white <- setdiff(setdiff(seq_len(length(g$grid)), g$red), g$blue)
+  return(all(g$grid[g$red] == 1) && all(g$grid[g$blue] == 2) && all(g$grid[white] == 0))
+}
+
 #' plot method for BMLGrid class object
 #'
 #' Plot the cars on the grid as red/blue squares over a white background.
@@ -112,6 +129,9 @@ runBMLGrid <- function(g, numSteps, movieName = NULL, recordSpeed = FALSE) {
       }
     }
     if (!movable_any && !any(movable)) {
+      #warning('fuckyou!')
+      warning(paste('Grid lock detected at step', toString(step)))
+      flush.console()
       break # We have entered a grid lock, no need to continue
     } else {
       movable_any <- any(movable)

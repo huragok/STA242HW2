@@ -54,11 +54,11 @@ get_nmoved <- function(grid, r, c, cars, direction) {
 # Let us execute this constructor
 r <- 100
 c <- 99
-rho <- 0.7
-p_red <- 0.7
-numSteps <- 10000
+rho <- 0.9
+p_red <- 0.5
+numSteps <- 100
 profile <- TRUE # Parameter to determine whether to profile the program or not
-movie <- FALSE # Parameter to determine whether to record a movie or not
+movie <- TRUE # Parameter to determine whether to record a movie or not
 
 ncars <- c(red = round(r * c * rho * p_red), blue = round(r * c * rho * (1 - p_red)))
 
