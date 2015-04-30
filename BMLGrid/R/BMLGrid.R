@@ -51,7 +51,7 @@ validateBMLGrid <- function(g) {
 #' @export
 plot.BMLGrid <- function(g, ...) {
   colormap <- c("white", "red", "blue")
-  image(1 : ncol(g$grid), 1 : nrow(g$grid), t(g$grid), col = colormap, xlab = '', ylab = '')
+  image(seq_len(ncol(g$grid)), seq_len(nrow(g$grid)), t(g$grid), col = colormap, xlab = '', ylab = '')
 }
 
 #' summary method for BMLGrid class object
@@ -94,6 +94,11 @@ runBMLGrid <- function(g, numSteps, movieName = NULL, recordSpeed = FALSE) {
   r <- nrow(g$grid)
   c <- ncol(g$grid)
   
+  if (r == 0 || c == 0 || (length(g$red) + length(g$blue)) == 0) { # Degenerate cases, return immediatly
+    warning('Degenerate BMLGrid object!')
+    flush.console()
+    return(g)
+  }
   flag_movie <- !is.null(movieName)
   if (flag_movie){
     par(bg = "white") # ensure the background color is white
